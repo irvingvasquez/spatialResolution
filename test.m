@@ -1,3 +1,5 @@
+%TODO: Revisar que las muestras no varien en interv
+
 clear;
 %X = [0:0.01:1];
 %X = X';
@@ -5,7 +7,7 @@ clear;
 %Y = zeros(n,1);
 
 alpha = 0.8;
-SPD = 0:0.1:10;
+SPD = 0:0.5:20;
 n=size(SPD,2);
 
 %for(i=1:n)
@@ -14,10 +16,10 @@ n=size(SPD,2);
 
 %plot(X,Y);
 
-H = [0:1:100];
+H = [0:5:200];
 m = size(H,2);
 spd = 1;
-interv = 10;
+interv = 3;
 
 for(i=1:m)
     [S(i), Overlap(i)] = resolution(spd, H(i), interv);

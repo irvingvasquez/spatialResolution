@@ -1,6 +1,6 @@
 function E = ExpectedInfo(spd, height, interv)
     % number of samples
-    n = 500;
+    n = 200;
     
     u = [spd; height; interv];
     Sigma = [1; 1; 0];

@@ -3,11 +3,11 @@ function y = fitness(spd, height, interv)
 alpha = 0.8;
 
 % Restrictions
-v0 = 1;
-v1 = 10;
+v0 = 5;
+v1 = 20;
 t0 = 3;
 h0 = 30;
-h1 = 100;
+h1 = 150;
 
 if( spd<v0 || spd>v1 )
     y = 0;
