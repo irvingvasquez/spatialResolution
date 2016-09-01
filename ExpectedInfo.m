@@ -1,9 +1,9 @@
 function E = ExpectedInfo(spd, height, interv)
     % number of samples
-    n = 200;
+    n = 1000;
     
     u = [spd; height; interv];
-    Sigma = [1; 1; 0];
+    Sigma = [1; 3; 0];
     
     for i=1:n
          [u_circunfleja, pdu]= sample(u, Sigma);

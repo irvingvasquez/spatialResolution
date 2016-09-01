@@ -3,21 +3,24 @@ clear;
 
 %Setup the GA
 ff = 'expectedNegFitness';
-npar = 2; %number of variables
-varhi = [20 200]; varlo=[0 0];%variable limits
+npar = 3; %number of variables
+varhi = [20 200 10]; varlo=[0 0 3];%variable limits
 
 %Stopping criteria
-maxit = 200; %maxnumber of iterations
+maxit = 1000; %maxnumber of iterations
 mincost = -9999999; %minimum cost
 
 %%Genetic algorithm parameters
-popsize = 12; %population size
-mutrate = 0.2; %mutation rate
+popsize = 20; %population size
+mutrate = 0.05; %mutation rate
 selection = 0.5; %fraction of population kept
 Nt = npar; % continuos parameter GA Nt = #variables
 keep = floor(selection*popsize); % #population members that survive
 nmut =  ceil((popsize-1)*Nt*mutrate); % total number of mutations
 M = ceil((popsize-keep)/2); % number of matings
+
+%Time
+tic;
 
 % Create the initial population
 iga = 0; %generation counter initialized
@@ -25,7 +28,6 @@ for i =1:Nt
     parvec = (varhi(1,i)-varlo(1,i))*rand(popsize,1)+varlo(1,i); %random
     par(:,i) = parvec;
 end
-
 
 Coords{1}=par;
 cost = feval(ff,par); %calculates the population cost using ff
@@ -50,7 +52,7 @@ while iga<maxit
     %choosing integer k with probability p(k)
     % 
     ic = 1;
-    while ic<M
+    while ic<=M
         for id = 2:keep+1
             if pick1(ic)<=odds(id) && pick1(ic)>odds(id-1)
                 ma(ic)=id-1;
@@ -69,17 +71,16 @@ while iga<maxit
     xp = ceil(rand(1,M)*Nt); %crossover point
     r= rand(1,M); %mixing parameter
     
-    for ic=1:Nt
+    for ic=1:M
         xy=par(ma(ic),xp(ic))-par(pa(ic),xp(ic)); % ma and pa mate
         par(keep+ix(ic),:)=par(ma(ic),:); % 1st offspring
         par(keep+ix(ic)+1,:)=par(pa(ic),:); % 2nd offspring
         par(keep+ix(ic),xp(ic))=par(ma(ic),xp(ic))-r(ic).*xy; % 1st
         par(keep+ix(ic)+1,xp(ic))=par(pa(ic),xp(ic))+r(ic).*xy; % 2nd
         if xp(ic)<npar % crossover when last variable not selected
-            par(keep+ix(ic),:)=[par(keep+ix(ic),1:xp(ic))
-            par(keep+ix(ic)+1,xp(ic)+1:npar)];
-            par(keep+ix(ic)+1,:)=[par(keep+ix(ic)+1,1:xp(ic))
-            par(keep+ix(ic),xp(ic)+1:npar)];
+            temp = [par(keep+ix(ic),1:xp(ic)), par(keep+ix(ic)+1,xp(ic)+1:npar)];
+            par(keep+ix(ic),:)= temp;
+            par(keep+ix(ic)+1,:)=[par(keep+ix(ic)+1,1:xp(ic)), par(keep+ix(ic),xp(ic)+1:npar)];
         end % if
     end
     
@@ -117,6 +118,9 @@ while iga<maxit
     [iga cost(1)];
 end %iga
 
+
+toc
+
 %% Displays the output
     day=clock;
     disp(datestr(datenum(day(1),day(2),day(3),day(4),day(5),day(6)),0))
@@ -131,5 +135,9 @@ end %iga
     figure(1)
     iters=0:length(minc)-1;
 
+    %WARNING: this was includes only for display purposes
+    minc = -1 * minc;
+    meanc = -1 * meanc;
+    
     plot(iters,minc,iters,meanc,'-');
-    xlabel('generation');ylabel('cost');
+    xlabel('Generation');ylabel('Expected utility');

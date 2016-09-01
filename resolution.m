@@ -1,8 +1,8 @@
 function [s overlap] = resolution(spd, height, interv)
 % Camera parameters
-s_pix = 0.0032; % pixel resolution in mm
-f = 8.43; %focal lenght in mm
-h_s = 4.92; %sensor height
+s_pix = 0.00121; % pixel resolution in mm
+f = 3.97; %focal lenght in mm
+h_s = 3.68; %sensor height
 
 s = s_pix * height * 1000 / f;
 
