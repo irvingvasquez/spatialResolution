@@ -2,7 +2,7 @@
 clear;
 
 %Setup the GA
-ff = 'fitnessFunction';
+ff = 'fitnessFunction_OC';
 npar = 3; %number of variables
 varhi = [24 120 10]; varlo=[0 0 1];%variable limits
 

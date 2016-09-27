@@ -46,7 +46,7 @@ Cam = GOPRO4;
 
 % UAV parameters: UAV = [v0; v1; h0; h1]
 % 3DR Solo parameters
-UAV = [0; 20; 30; 100];
+UAV = [0; 24; 40; 120];
 
 % Desired overlap: alpha
 alpha = 0.8;

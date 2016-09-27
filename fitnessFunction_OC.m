@@ -46,7 +46,7 @@ Cam = GOPRO4;
 
 % UAV parameters: UAV = [v0; v1; h0; h1]
 % 3DR Solo parameters
-UAV = [0; 20; 30; 100];
+UAV = [0; 24; 40; 120];
 
 % Desired overlap: alpha
 alpha = 0.8;
@@ -59,9 +59,7 @@ Sigma = [1; 3; 0];
 
 velocity = [2 4 6 8 10 12 14 16];
 power = [220  215 210  208 212 230 260 300];
-    %plot(velocity, power, 'o');
 Coef = polyfit(velocity,power,3);
-    %power_mr = @(speed) polyval(coef, speed); 
 
     for i=1:m
         %value(i) = -ExpectedInfo(A(i,1),A(i,2),A(i,3));
