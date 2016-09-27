@@ -24,29 +24,42 @@
 %  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 %  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 %  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- 
 
-%Config parameter.  Q = [spd; height, interv]
-%Camera parameter.  Cam = [f; h_s; s_pix]
 
-function [s overlap] = resolution(spd, height, interv, Cam)
+% Config parameter: Q = [spd; height, interv]
+% Camera parameter: Cam = [f; h_s; s_pix, t0]
+% UAV parameters: UAV = [v0; v1; h0; h1]
+% Desired overlap: alpha
+% number of samples: n
+% Sigma = [sigma_spd; sigma_height; sigma_t]
 
-% Camera parameters Mappir
-%s_pix = 0.00121; % pixel resolution in mm
-%f = 3.97; %focal lenght in mm
-%h_s = 3.68; %sensor height
+function E = expectedG(spd, height, interv, Cam, UAV, alpha, n, Sigma)
+    %TODO: cambiar u por Q
+    u = [spd; height; interv];
+    %Sigma = [1; 3; 0];
+    
+    for i=1:n
+         [u_circunfleja, pdu]= sample(u, Sigma);
+         Samples(:,i) = u_circunfleja;
+         Probabilidades(:,i) = pdu; 
+    end
+    
+    Suma = sum(Probabilidades,2);
+    Escalar = 1./ Suma;
+    Pspd = Escalar(1,1) * Probabilidades(1,:);
+    Pheight = Escalar(2,1) * Probabilidades(2,:);
+    Pinterv = Escalar(3,1) * Probabilidades(3,:);
 
-s_pix = Cam(3);
-f = Cam(1); %focal lenght in mm
-h_s = Cam(2); %sensor height
-
-%GOPRO4 Silver parameters:
-%s_pix = 0.00155; % pixel resolution in mm
-%f = 1.6976; %focal lenght in mm
-%h_s = 4.65; %sensor height
-
-s = s_pix * height * 1000 / f;
-d = spd * interv;
-overlap = 1 - (d *1000 *f)/(h_s*height*1000);
-
+    Pdu_circunfleja = Pspd' .* Pheight' .* Pinterv';
+    eta = 1/sum(Pdu_circunfleja);
+    Pdu_cir_norm = eta * Pdu_circunfleja;
+    
+    for i=1:n
+        spd = Samples(1,i);
+        height = Samples(2,i);
+        interv = Samples(3,i);
+        fit(i,1) = g_utility(spd, height, interv, Cam, UAV, alpha);
+    end
+    
+    E = sum(Pdu_cir_norm .* fit);
 end

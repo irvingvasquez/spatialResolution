@@ -1,6 +1,6 @@
-function E = ExpectedInfoSpd(spd, height, interv)
+function E = ExpectedInfoDistPE(spd, height, interv)
     % number of samples
-    n = 100;
+    n = 500;
     
     % Energy
     velocity = [2 4 6 8 10 12 14 16];

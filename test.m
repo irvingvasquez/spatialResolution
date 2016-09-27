@@ -28,7 +28,7 @@ for(i=1:m)
     %G(i) = W(i)*I(i);
     %F(i) = fitness(spd, H(i), interv);
     for(j=1:n)
-        FF(i,j) = fitness(SPD(j),H(i),interv);
+        %FF(i,j) = fitness(SPD(j),H(i),interv);
         EI(i,j) = ExpectedInfo(SPD(j),H(i),interv);
     end
 end

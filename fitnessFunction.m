@@ -24,29 +24,47 @@
 %  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 %  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 %  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- 
 
-%Config parameter.  Q = [spd; height, interv]
-%Camera parameter.  Cam = [f; h_s; s_pix]
 
-function [s overlap] = resolution(spd, height, interv, Cam)
+% Config parameter: Q = [spd; height, interv]
+% Camera parameter: Cam = [f; h_s; s_pix, t0]
+% UAV parameters: UAV = [v0; v1; h0; h1]
+% Desired overlap: alpha
+% number of samples: n
+% Sigma = [sigma_spd; sigma_height; sigma_t]
 
-% Camera parameters Mappir
-%s_pix = 0.00121; % pixel resolution in mm
-%f = 3.97; %focal lenght in mm
-%h_s = 3.68; %sensor height
+function value = fitnessFunction(A)
+[m,n] = size(A);
 
-s_pix = Cam(3);
-f = Cam(1); %focal lenght in mm
-h_s = Cam(2); %sensor height
+% Experiment configuration
 
+% Camera parameter: Cam = [f; h_s; s_pix, t0]
 %GOPRO4 Silver parameters:
-%s_pix = 0.00155; % pixel resolution in mm
-%f = 1.6976; %focal lenght in mm
-%h_s = 4.65; %sensor height
+GOPRO4 = [1.6976; 4.65; 0.00155; 1];
+MAPPIR = [3.97; 3.68; 0.00121; 3];
+Cam = GOPRO4;
 
-s = s_pix * height * 1000 / f;
-d = spd * interv;
-overlap = 1 - (d *1000 *f)/(h_s*height*1000);
+% UAV parameters: UAV = [v0; v1; h0; h1]
+% 3DR Solo parameters
+UAV = [0; 20; 30; 100];
 
+% Desired overlap: alpha
+alpha = 0.8;
+
+% number of samples: n
+n = 250;
+
+% Sigma = [sigma_spd; sigma_height; sigma_t]
+Sigma = [1; 3; 0];
+
+    for i=1:m
+        %value(i) = -ExpectedInfo(A(i,1),A(i,2),A(i,3));
+        
+        % Config parameter: Q = [spd; height, interv]
+        spd = A(i,1);
+        height = A(i,2);
+        interv = A(i,3);
+
+        value(i) = -expectedG(spd, height, interv, Cam, UAV, alpha, n, Sigma);
+    end
 end

@@ -24,29 +24,35 @@
 %  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 %  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 %  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- 
 
-%Config parameter.  Q = [spd; height, interv]
-%Camera parameter.  Cam = [f; h_s; s_pix]
+% Config parameter: Q = [spd; height, interv]
+% Camera parameter: Cam = [f; h_s; s_pix, t0]
+% UAV parameters: UAV = [v0; v1; h0; h1]
+% Desired overlap: alpha
 
-function [s overlap] = resolution(spd, height, interv, Cam)
+function g = g_utility(spd, height, interv, Cam, UAV, alpha)
 
-% Camera parameters Mappir
-%s_pix = 0.00121; % pixel resolution in mm
-%f = 3.97; %focal lenght in mm
-%h_s = 3.68; %sensor height
+    % Restrictions
+    v0 = UAV(1);
+    v1 = UAV(2);
+    t0 = Cam(4);
+    h0 = UAV(3);
+    h1 = UAV(4);
 
-s_pix = Cam(3);
-f = Cam(1); %focal lenght in mm
-h_s = Cam(2); %sensor height
-
-%GOPRO4 Silver parameters:
-%s_pix = 0.00155; % pixel resolution in mm
-%f = 1.6976; %focal lenght in mm
-%h_s = 4.65; %sensor height
-
-s = s_pix * height * 1000 / f;
-d = spd * interv;
-overlap = 1 - (d *1000 *f)/(h_s*height*1000);
+    if( spd<v0 || spd>v1 )
+        g = 0;
+    else if(interv < t0)
+            g = 0;
+        else
+            if(height < h0 || height > h1)
+                g = 0;
+            else
+                [s, overlap] = resolution(spd, height, interv, Cam);
+                w = functionF(overlap,alpha);
+                I = 1/s;
+                g = w * I;
+            end
+        end
+    end
 
 end

@@ -25,28 +25,22 @@
 %  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 %  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
-
-%Config parameter.  Q = [spd; height, interv]
-%Camera parameter.  Cam = [f; h_s; s_pix]
-
-function [s overlap] = resolution(spd, height, interv, Cam)
-
-% Camera parameters Mappir
-%s_pix = 0.00121; % pixel resolution in mm
-%f = 3.97; %focal lenght in mm
-%h_s = 3.68; %sensor height
-
-s_pix = Cam(3);
-f = Cam(1); %focal lenght in mm
-h_s = Cam(2); %sensor height
-
-%GOPRO4 Silver parameters:
-%s_pix = 0.00155; % pixel resolution in mm
-%f = 1.6976; %focal lenght in mm
-%h_s = 4.65; %sensor height
-
-s = s_pix * height * 1000 / f;
-d = spd * interv;
-overlap = 1 - (d *1000 *f)/(h_s*height*1000);
-
+% Evaluation function for overlap
+% tested ok
+function y = functionF(x, alpha)
+    if (x >=0 && x <= alpha)
+        a0 = -2/(alpha.^3); 
+        a1 = 3/(alpha.^2);
+        y = a0 * x.^3 + a1 * x.^2;
+    else if (x>alpha && x<=1)
+            amuc = (alpha - 1).^3;
+            a0 = -2/amuc;
+            a1 = (3*(alpha+1))/amuc;
+            a2 = -(6*alpha)/amuc;
+            a3 = (3*alpha-1)/amuc;
+            y = a0*x.^3 + a1*x.^2 + a2*x + a3;
+        else
+            y = 0;
+        end
+    end
 end
