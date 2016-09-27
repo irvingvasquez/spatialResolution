@@ -33,13 +33,13 @@
 % number of samples: n
 % Sigma = [sigma_spd; sigma_height; sigma_t]
 
-function E = expectedG(spd, height, interv, Cam, UAV, alpha, n, Sigma)
+function E = expectedG(Q, Cam, UAV, alpha, n, Sigma)
     %TODO: cambiar u por Q
-    u = [spd; height; interv];
+    %u = [spd; height; interv];
     %Sigma = [1; 3; 0];
     
     for i=1:n
-         [u_circunfleja, pdu]= sample(u, Sigma);
+         [u_circunfleja, pdu]= sample(Q, Sigma);
          Samples(:,i) = u_circunfleja;
          Probabilidades(:,i) = pdu; 
     end
@@ -55,10 +55,11 @@ function E = expectedG(spd, height, interv, Cam, UAV, alpha, n, Sigma)
     Pdu_cir_norm = eta * Pdu_circunfleja;
     
     for i=1:n
-        spd = Samples(1,i);
-        height = Samples(2,i);
-        interv = Samples(3,i);
-        fit(i,1) = g_utility(spd, height, interv, Cam, UAV, alpha);
+        Q = Samples(:,i);
+        %spd = Samples(1,i);
+        %height = Samples(2,i);
+        %interv = Samples(3,i);
+        fit(i,1) = g_utility(Q, Cam, UAV, alpha);
     end
     
     E = sum(Pdu_cir_norm .* fit);

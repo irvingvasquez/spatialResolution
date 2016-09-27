@@ -30,7 +30,10 @@
 % UAV parameters: UAV = [v0; v1; h0; h1]
 % Desired overlap: alpha
 
-function g = g_utility(spd, height, interv, Cam, UAV, alpha)
+function g = g_utility(Q, Cam, UAV, alpha)
+    spd = Q(1);
+    height = Q(2);
+    interv = Q(3);
 
     % Restrictions
     v0 = UAV(1);
@@ -47,12 +50,11 @@ function g = g_utility(spd, height, interv, Cam, UAV, alpha)
             if(height < h0 || height > h1)
                 g = 0;
             else
-                [s, overlap] = resolution(spd, height, interv, Cam);
+                [s, overlap] = resolution(Q, Cam);
                 w = functionF(overlap,alpha);
                 I = 1/s;
                 g = w * I;
             end
         end
     end
-
 end

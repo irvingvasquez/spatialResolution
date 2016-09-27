@@ -33,7 +33,7 @@
 % number of samples: n
 % Sigma = [sigma_spd; sigma_height; sigma_t]
 
-function value = fitnessFunction(A)
+function value = fitnessFunction_OC(A)
 [m,n] = size(A);
 
 % Experiment configuration
@@ -57,6 +57,12 @@ n = 250;
 % Sigma = [sigma_spd; sigma_height; sigma_t]
 Sigma = [1; 3; 0];
 
+velocity = [2 4 6 8 10 12 14 16];
+power = [220  215 210  208 212 230 260 300];
+    %plot(velocity, power, 'o');
+Coef = polyfit(velocity,power,3);
+    %power_mr = @(speed) polyval(coef, speed); 
+
     for i=1:m
         %value(i) = -ExpectedInfo(A(i,1),A(i,2),A(i,3));
         
@@ -66,6 +72,6 @@ Sigma = [1; 3; 0];
         interv = A(i,3);
         Q = [spd; height; interv];
 
-        value(i) = -expectedG(Q, Cam, UAV, alpha, n, Sigma);
+        value(i) = -expectedG_OC(Q, Cam, UAV, alpha, n, Sigma, Coef);
     end
 end

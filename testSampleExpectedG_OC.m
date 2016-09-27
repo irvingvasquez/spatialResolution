@@ -30,12 +30,16 @@ nn=size(SPD,2);
 H = UAV(3):2.5:UAV(4);
 m = size(H,2);
 
+velocity = [2 4 6 8 10 12 14 16];
+power = [220  215 210  208 212 230 260 300];
+Coef = polyfit(velocity,power,3);
+
 interv = 1;
 
 for(i=1:m)
     for(j=1:nn)
         Q = [SPD(j);H(i);interv];
-        EI(i,j) = expectedG(Q, Cam, UAV, alpha, n, Sigma);
+        EI(i,j) = expectedG_OC(Q, Cam, UAV, alpha, n, Sigma, Coef);
         %EI(i,j) = ExpectedInfo(SPD(j),H(i),interv);
     end
 end

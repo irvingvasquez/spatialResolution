@@ -33,39 +33,34 @@
 % number of samples: n
 % Sigma = [sigma_spd; sigma_height; sigma_t]
 
-function value = fitnessFunction(A)
-[m,n] = size(A);
-
-% Experiment configuration
-
-% Camera parameter: Cam = [f; h_s; s_pix, t0]
-%GOPRO4 Silver parameters:
-GOPRO4 = [1.6976; 4.65; 0.00155; 1];
-MAPPIR = [3.97; 3.68; 0.00121; 3];
-Cam = GOPRO4;
-
-% UAV parameters: UAV = [v0; v1; h0; h1]
-% 3DR Solo parameters
-UAV = [0; 20; 30; 100];
-
-% Desired overlap: alpha
-alpha = 0.8;
-
-% number of samples: n
-n = 250;
-
-% Sigma = [sigma_spd; sigma_height; sigma_t]
-Sigma = [1; 3; 0];
-
-    for i=1:m
-        %value(i) = -ExpectedInfo(A(i,1),A(i,2),A(i,3));
-        
-        
-        spd = A(i,1);
-        height = A(i,2);
-        interv = A(i,3);
-        Q = [spd; height; interv];
-
-        value(i) = -expectedG(Q, Cam, UAV, alpha, n, Sigma);
+function E = expectedG_OC(Q, Cam, UAV, alpha, n, Sigma, Coef)
+    %TODO: cambiar u por Q
+    %u = [spd; height; interv];
+    %Sigma = [1; 3; 0];
+    
+    for i=1:n
+         [u_circunfleja, pdu]= sample(Q, Sigma);
+         Samples(:,i) = u_circunfleja;
+         Probabilidades(:,i) = pdu; 
     end
+    
+    Suma = sum(Probabilidades,2);
+    Escalar = 1./ Suma;
+    Pspd = Escalar(1,1) * Probabilidades(1,:);
+    Pheight = Escalar(2,1) * Probabilidades(2,:);
+    Pinterv = Escalar(3,1) * Probabilidades(3,:);
+
+    Pdu_circunfleja = Pspd' .* Pheight' .* Pinterv';
+    eta = 1/sum(Pdu_circunfleja);
+    Pdu_cir_norm = eta * Pdu_circunfleja;
+    
+    for i=1:n
+        Q = Samples(:,i);
+        %spd = Samples(1,i);
+        %height = Samples(2,i);
+        %interv = Samples(3,i);
+        fit(i,1) = g_utility_OC(Q, Cam, UAV, alpha, Coef);
+    end
+    
+    E = sum(Pdu_cir_norm .* fit);
 end

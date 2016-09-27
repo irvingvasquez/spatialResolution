@@ -29,21 +29,15 @@
 %Config parameter.  Q = [spd; height, interv]
 %Camera parameter.  Cam = [f; h_s; s_pix]
 
-function [s overlap] = resolution(spd, height, interv, Cam)
+function [s overlap] = resolution(Q, Cam)
 
-% Camera parameters Mappir
-%s_pix = 0.00121; % pixel resolution in mm
-%f = 3.97; %focal lenght in mm
-%h_s = 3.68; %sensor height
+spd = Q(1);
+height = Q(2);
+interv = Q(3);
 
 s_pix = Cam(3);
 f = Cam(1); %focal lenght in mm
 h_s = Cam(2); %sensor height
-
-%GOPRO4 Silver parameters:
-%s_pix = 0.00155; % pixel resolution in mm
-%f = 1.6976; %focal lenght in mm
-%h_s = 4.65; %sensor height
 
 s = s_pix * height * 1000 / f;
 d = spd * interv;

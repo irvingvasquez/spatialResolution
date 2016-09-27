@@ -25,47 +25,39 @@
 %  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 %  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 % Config parameter: Q = [spd; height, interv]
 % Camera parameter: Cam = [f; h_s; s_pix, t0]
 % UAV parameters: UAV = [v0; v1; h0; h1]
 % Desired overlap: alpha
-% number of samples: n
-% Sigma = [sigma_spd; sigma_height; sigma_t]
 
-function value = fitnessFunction(A)
-[m,n] = size(A);
+function g = g_utility_OC(Q, Cam, UAV, alpha, Coef)
+    spd = Q(1);
+    height = Q(2);
+    interv = Q(3);
 
-% Experiment configuration
+    % Restrictions
+    v0 = UAV(1);
+    v1 = UAV(2);
+    t0 = Cam(4);
+    h0 = UAV(3);
+    h1 = UAV(4);
 
-% Camera parameter: Cam = [f; h_s; s_pix, t0]
-%GOPRO4 Silver parameters:
-GOPRO4 = [1.6976; 4.65; 0.00155; 1];
-MAPPIR = [3.97; 3.68; 0.00121; 3];
-Cam = GOPRO4;
-
-% UAV parameters: UAV = [v0; v1; h0; h1]
-% 3DR Solo parameters
-UAV = [0; 20; 30; 100];
-
-% Desired overlap: alpha
-alpha = 0.8;
-
-% number of samples: n
-n = 250;
-
-% Sigma = [sigma_spd; sigma_height; sigma_t]
-Sigma = [1; 3; 0];
-
-    for i=1:m
-        %value(i) = -ExpectedInfo(A(i,1),A(i,2),A(i,3));
-        
-        
-        spd = A(i,1);
-        height = A(i,2);
-        interv = A(i,3);
-        Q = [spd; height; interv];
-
-        value(i) = -expectedG(Q, Cam, UAV, alpha, n, Sigma);
+    if( spd<v0 || spd>v1 )
+        g = 0;
+    else if(interv < t0)
+            g = 0;
+        else
+            if(height < h0 || height > h1)
+                g = 0;
+            else
+                [s, overlap] = resolution(Q, Cam);
+                power_mr = polyval(Coef, spd);
+                EperDist = power_mr / spd;
+                DistPerEner = 1 / EperDist;
+                w = functionF(overlap,alpha) * DistPerEner;
+                I = 1/s;
+                g = w * I;
+            end
+        end
     end
 end
