@@ -42,6 +42,7 @@ function value = fitnessFunction(A)
 %GOPRO4 Silver parameters:
 GOPRO4 = [1.6976; 4.65; 0.00155; 1];
 MAPPIR = [3.97; 3.68; 0.00121; 3];
+TETRACAM_MICRO = [8.43; 4.92; 0.0032; 3];
 Cam = GOPRO4;
 
 % UAV parameters: UAV = [v0; v1; h0; h1]
@@ -59,7 +60,6 @@ Sigma = [1; 3; 0];
 
     for i=1:m
         %value(i) = -ExpectedInfo(A(i,1),A(i,2),A(i,3));
-        
         
         spd = A(i,1);
         height = A(i,2);

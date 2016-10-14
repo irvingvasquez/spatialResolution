@@ -7,16 +7,18 @@ clear;
 %GOPRO4 Silver parameters:
 GOPRO4 = [1.6976; 4.65; 0.00155; 1];
 MAPPIR = [3.97; 3.68; 0.00121; 3];
+TETRACAM_MICRO = [8.43; 4.92; 0.0032; 3];
 
 %Cam = MAPPIR;
 Cam = GOPRO4;
+%Cam = TETRACAM_MICRO;
 
 % UAV parameters: UAV = [v0; v1; h0; h1]
 % 3DR Solo parameters
 UAV = [0; 24; 40; 120];
 
 % Desired overlap: alpha
-alpha = 0.6;
+alpha = 0.8;
 
 % number of samples: n
 n = 250;
@@ -34,7 +36,7 @@ velocity = [2 4 6 8 10 12 14 16];
 power = [220  215 210  208 212 230 260 300];
 Coef = polyfit(velocity,power,3);
 
-interv = 1;
+interv = 3;
 
 for(i=1:m)
     for(j=1:nn)
