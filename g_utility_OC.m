@@ -1,4 +1,7 @@
 % Copyright (c) 2016, J.I. Vasquez <ivasquez@ccc.inaoep.mx>
+% Consejo Nacional de Ciencia y Tecnología
+% Instiuto Politecnico Nacional
+% Centro de Innovación y Desarrollo Tecnológico en Cómputo
 % All rights reserved.
 %   
 % BSD License

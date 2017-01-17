@@ -1,4 +1,7 @@
 % Copyright (c) 2016, J.I. Vasquez <ivasquez@ccc.inaoep.mx>
+% Consejo Nacional de Ciencia y Tecnología
+% Instiuto Politecnico Nacional
+% Centro de Innovación y Desarrollo Tecnológico en Cómputo
 % All rights reserved.
 %   
 % BSD License
@@ -24,7 +27,6 @@
 %  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 %  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 %  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 
 % Config parameter: Q = [spd; height, interv]
 % Camera parameter: Cam = [f; h_s; s_pix, t0]
