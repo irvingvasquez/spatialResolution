@@ -120,7 +120,7 @@ while iga<maxit
     % -------------------
     % Performs mating using single point crossover
     
-    ix =1:2:keep; %index of mate1
+    ix =1:2:(popsize - keep); %index of mate1
     xp = ceil(rand(1,M)*Nt); %crossover point
     r= rand(1,M); %mixing parameter
     
